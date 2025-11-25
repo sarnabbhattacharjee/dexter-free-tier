@@ -13,7 +13,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 app.post('/ask-auraa', async (req, res) => {
     try {
         // We use gemini-1.5-flash because it is the fastest and most stable for free tier
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
         
         const prompt = req.body.prompt;
         
