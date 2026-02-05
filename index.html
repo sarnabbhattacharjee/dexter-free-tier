@@ -3,51 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dexter Free Tier</title>
+    <title>DEXTER | FREE TIER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        .maintenance-notice {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            z-index: 1000;
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff0055;
+            --neon-yellow: #ffee00;
+            --bg-dark: #050505;
+            --panel-bg: rgba(10, 10, 16, 0.95);
+            --font-main: 'Rajdhani', sans-serif;
+            --font-tech: 'Share Tech Mono', monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark); color: white; font-family: var(--font-main);
+            height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+        }
+        .scanline {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.4) 51%);
+            background-size: 100% 4px; pointer-events: none; z-index: 100; opacity: 0.5;
+        }
+        .cyber-grid {
+            position: absolute; width: 200%; height: 200%;
+            background-image: linear-gradient(rgba(0, 243, 255, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 20s linear infinite; z-index: 0;
+        }
+        @keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } }
+        
+        .gate-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98);
+            z-index: 9999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(20px);
+        }
+        .gate-box {
+            width: 90%; max-width: 600px; border: 2px solid var(--neon-red); background: rgba(15, 5, 5, 0.95);
+            padding: 40px; text-align: center; box-shadow: 0 0 60px rgba(255, 0, 85, 0.2);
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+        }
+        .gate-title { color: var(--neon-red); font-size: 2.2rem; font-family: var(--font-tech); letter-spacing: 3px; margin-bottom: 20px; animation: glitch 2s infinite; }
+        .gate-text { color: #d1d5db; text-align: left; margin-bottom: 30px; line-height: 1.6; font-size: 1rem; border-top: 1px solid rgba(255,0,0,0.3); border-bottom: 1px solid rgba(255,0,0,0.3); padding: 20px 0; }
+        .accept-btn { background: var(--neon-red); color: white; font-family: var(--font-tech); font-size: 1.1rem; padding: 15px 40px; border: none; cursor: pointer; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); }
+        .accept-btn:hover { background: white; color: black; box-shadow: 0 0 20px var(--neon-red); }
+
+        #maintenance-gate { z-index: 10001; }
+        .maintenance-box {
+            border-color: var(--neon-yellow);
+            background: rgba(25, 20, 5, 0.95);
+            box-shadow: 0 0 60px rgba(255, 238, 0, 0.3);
+        }
+        .maintenance-title {
+            color: var(--neon-yellow);
+            font-size: 2rem;
+        }
+        .maintenance-icon {
+            font-size: 4rem;
+            color: var(--neon-yellow);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .btn-group {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
-        .maintenance-notice button {
-            margin-left: 10px;
-            background-color: #007bff;
+        .proceed-btn {
+            background: var(--neon-blue);
             color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
         }
-        .maintenance-notice.hidden {
-            display: none;
+        .proceed-btn:hover {
+            background: white;
+            color: var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue);
         }
-        #chatbot {
-            margin-top: 60px; /* Make space for the notice */
+     
+        #expiry-gate { display: none; z-index: 10000; }
+        .upgrade-btn { background: var(--neon-yellow); color: black; margin-top: 10px; }
+        
+        #main-interface { display: flex; height: 100%; z-index: 10; padding: 25px; gap: 25px; filter: blur(20px); opacity: 0.2; transition: all 1s ease; }
+        .sidebar { width: 320px; display: flex; flex-direction: column; gap: 20px; }
+        .defender-unit { border: 1px solid var(--neon-blue); background: var(--panel-bg); padding: 0; box-shadow: 0 0 15px rgba(0, 243, 255, 0.05); display: flex; flex-direction: column; }
+        .defender-header { display: flex; justify-content: space-between; background: rgba(0, 243, 255, 0.15); color: var(--neon-blue); font-family: var(--font-tech); font-size: 0.85rem; padding: 10px 15px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .timer-box {
+            padding: 15px; border: 1px solid var(--neon-red); background: rgba(255, 0, 0, 0.05);
+            text-align: center; margin-bottom: 20px;
         }
+        .timer-label { font-family: var(--font-tech); font-size: 0.8rem; color: var(--neon-red); letter-spacing: 2px; margin-bottom: 5px; }
+        .timer-digits { font-family: var(--font-tech); font-size: 2.5rem; color: white; text-shadow: 0 0 10px var(--neon-red); }
+
+        .cctv-container { width: 100%; height: 200px; background: #000; position: relative; overflow: hidden; }
+        .click-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99; background: transparent; }
+        .cctv-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.25) 50%); background-size: 100% 4px; z-index: 50; pointer-events: none; }
+        .rec-tag { position: absolute; top: 15px; right: 15px; color: red; font-family: var(--font-tech); font-size: 0.8rem; z-index: 60; animation: blink 1s infinite; text-shadow: 0 0 5px red; }
+        .cctv-iframe { position: absolute; top: 50%; left: 50%; width: 160%; height: 160%; transform: translate(-50%, -50%); border: none; filter: grayscale(100%) contrast(1.1) sepia(20%); pointer-events: none; }
+        .status-log { font-family: var(--font-tech); font-size: 0.75rem; color: var(--neon-blue); padding: 15px; text-align: center; opacity: 0.8; border-top: 1px solid rgba(0, 243, 255, 0.2); background: rgba(0,0,0,0.6); }
+
+        .chat-section { flex: 1; display: flex; flex-direction: column; border: 1px solid var(--neon-blue); background: rgba(5, 5, 8, 0.85); position: relative; }
+        .chat-header { padding: 15px 25px; background: rgba(0, 243, 255, 0.08); border-bottom: 1px solid var(--neon-blue); display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-size: 1.5rem; font-weight: 700; color: white; letter-spacing: 2px; }
+        .brand span { color: var(--neon-blue); }
+        .messages-area { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+        .messages-area::-webkit-scrollbar { width: 6px; }
+        .messages-area::-webkit-scrollbar-thumb { background: var(--neon-blue); }
+        .msg { max-width: 85%; padding: 15px; font-size: 1rem; line-height: 1.5; position: relative; animation: slideUp 0.3s ease-out; word-wrap: break-word; }
+        .msg-user { align-self: flex-end; background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(188, 19, 254, 0.15)); border-right: 2px solid var(--neon-purple); text-align: right; }
+        .msg-ai { align-self: flex-start; background: linear-gradient(90deg, rgba(0, 243, 255, 0.08), rgba(0,0,0,0.5)); border-left: 2px solid var(--neon-blue); color: var(--neon-blue); font-family: var(--font-tech); }
+        .input-bar { padding: 20px; background: rgba(0,0,0,0.8); border-top: 1px solid var(--neon-blue); display: flex; gap: 15px; }
+        .cyber-input { flex: 1; background: transparent; border: 1px solid #333; color: var(--neon-blue); font-family: var(--font-tech); font-size: 1.1rem; padding: 12px 15px; outline: none; transition: all 0.3s; }
+        .cyber-input:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.15); }
+        .send-btn { width: 80px; background: var(--neon-blue); border: none; font-weight: 800; font-family: var(--font-tech); cursor: pointer; clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%, 0 15%); transition: all 0.3s; }
+        .send-btn:hover { background: white; box-shadow: 0 0 15px var(--neon-blue); }
+
+        @keyframes glitch { 0% { text-shadow: 2px 0 var(--neon-blue), -2px 0 var(--neon-purple); } 100% { text-shadow: 2px 0 var(--neon-blue), -2px 0 var(--neon-purple); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 800px) { #main-interface { flex-direction: column; padding: 10px; gap: 10px; } .sidebar { width: 100%; order: -1; } .cctv-container { height: 180px; } .chat-section { height: 400px; } }
     </style>
 </head>
 <body>
-    <div class="maintenance-notice" id="maintenance-notice">
-        <span>We are currently undergoing maintenance. Please be patient.</span>
-        <button id="dismiss-notice">PROCEED ANYWAY</button>
+
+    <div class="scanline"></div>
+    <div class="cyber-grid"></div>
+
+    <div id="maintenance-gate" class="gate-overlay">
+        <div class="gate-box maintenance-box">
+            <div class="maintenance-icon">⚠️</div>
+            <h1 class="gate-title maintenance-title">SYSTEM MAINTENANCE</h1>
+            <div class="gate-text" style="text-align: center; border-color: rgba(255,238,0,0.3);">
+                <p style="font-size: 1.2rem; color: var(--neon-yellow); margin-bottom: 20px;"><strong>⚠️ NOTICE: AI UNDER DEVELOPMENT ⚠️</strong></p>
+                <p style="font-size: 1rem; color: #d1d5db;">The AI is currently undergoing development. You may experience:</p>
+                <ul style="margin: 15px auto; color: var(--neon-yellow); list-style: none; text-align: left; max-width: 400px;">
+                    <li style="margin: 8px 0;">⚡ Slower response times</li>
+                    <li style="margin: 8px 0;">🔄 Connection interruptions</li>
+                    <li style="margin: 8px 0;">❌ Unexpected errors</li>
+                </ul>
+                <p style="font-size: 0.9rem; color: #999; margin-top: 20px;">You can still test the system, but expect instability.</p>
+                <p style="font-size: 0.8rem; color: var(--neon-yellow); margin-top: 15px; font-family: var(--font-tech);">STATUS: BETA TESTING MODE</p>
+            </div>
+            <div class="btn-group">
+                <button class="accept-btn proceed-btn" id="proceed-btn">PROCEED ANYWAY</button>
+                <button class="accept-btn" style="background: var(--neon-red);" onclick="window.close()">EXIT</button>
+            </div>
+        </div>
     </div>
 
-    <div id="chatbot">
-        <!-- Chatbot implementation goes here -->
+    <div id="terms-gate" class="gate-overlay" style="display: none;">
+        <div class="gate-box">
+            <h1 class="gate-title">⚠️ FREE TIER ACCESS ⚠️</h1>
+            <div class="gate-text">
+                <p><strong>SYSTEM NOTICE: TRIAL MODE</strong></p>
+                <p>You are accessing the DEXTER Neural Network on a limited license.</p>
+                <ul style="margin: 15px 0 15px 20px; color: var(--neon-red); list-style: square;">
+                    <li><span style="color:#bbb">Session Limit: <strong>5 MINUTES</strong></span></li>
+                    <li><span style="color:#bbb">User assumes full liability for outputs.</span></li>
+                    <li><span style="color:#bbb">Developer (Sarnab) is immune from liability.</span></li>
+                    <li><span style="color:#bbb">Defender System Active.</span></li>
+                </ul>
+                <p style="font-size: 0.8rem; opacity: 0.7;">SESSION WILL TERMINATE AUTOMATICALLY.</p>
+            </div>
+            <button class="accept-btn" id="accept-btn">START 5-MIN SESSION</button>
+        </div>
+    </div>
+
+    <div id="expiry-gate" class="gate-overlay" style="display: none;">
+        <div class="gate-box" style="border-color: var(--neon-yellow);">
+            <h1 class="gate-title" style="color: var(--neon-yellow);">⚠️ SESSION EXPIRED ⚠️</h1>
+            <div class="gate-text">
+                <p><strong>TIME LIMIT REACHED.</strong></p>
+                <p>Your free connection to the DEXTER Neural Network has been severed to preserve server resources.</p>
+                <p style="color: var(--neon-red); margin-top: 20px;">CONNECTION TERMINATED.</p>
+            </div>
+            <button class="accept-btn upgrade-btn" onclick="location.reload()">RESTART SESSION</button>
+        </div>
+    </div>
+
+    <div id="main-interface">
+        <div class="sidebar">
+            <div class="defender-unit timer-box">
+                <div class="timer-label">SESSION REMAINING</div>
+                <div class="timer-digits" id="timer">05:00</div>
+            </div>
+            <div class="defender-unit">
+                <div class="defender-header">
+                    <span>DEFENDER SYSTEM</span>
+                    <span style="color:var(--neon-red); animation: blink 1s infinite;">● REC</span>
+                </div>
+                <div class="cctv-container">
+                    <div class="click-shield"></div>
+                    <div class="rec-tag">CAM-01</div>
+                    <div class="cctv-overlay"></div>
+                    <iframe class="cctv-iframe" src="https://tenor.com/embed/26766629?autoplay=1&muted=1&controls=0&loop=1&showinfo=0"></iframe>
+                </div>
+                <div class="status-log">
+                    SECURITY LEVEL: GHOST<br>Carefull I am watching u, miss-use = BAN...
+                </div>
+            </div>
+            <div class="defender-unit">
+                <div class="defender-header">SYSTEM SPECS</div>
+                <div style="padding: 15px;">
+                    <div style="color: var(--neon-blue); font-family: var(--font-tech); font-size: 0.9rem;">
+                        CORE: <span style="color:white">DEXTER AI</span><br>
+                        TIER: <span style="color:var(--neon-red)">TRIAL (5 MIN)</span><br>
+                        DEV : <span style="color:white">SARNAB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-section">
+            <div class="chat-header">
+                <div class="brand">AURAA <span>// AI</span></div>
+                <div style="font-family: var(--font-tech); font-size: 0.9rem; color: var(--neon-blue);">V.0.1.FREE-TIER</div>
+            </div>
+            <div class="messages-area" id="messages"></div>
+            <div class="input-bar">
+                <input type="text" class="cyber-input" id="user-input" placeholder="Write here..." autocomplete="off">
+                <button class="send-btn" id="send-btn">SEND</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        document.getElementById('dismiss-notice').onclick = function() {
-            document.getElementById('maintenance-notice').classList.toggle('hidden');
-        };
+        const SESSION_MINUTES = 5;
+        const maintenanceGate = document.getElementById('maintenance-gate');
+        const gate = document.getElementById('terms-gate');
+        const expiryGate = document.getElementById('expiry-gate');
+        const main = document.getElementById('main-interface');
+        const msgs = document.getElementById('messages');
+        const input = document.getElementById('user-input');
+        const btn = document.getElementById('send-btn');
+        const timerDisplay = document.getElementById('timer');
+
+        let timeRemaining = SESSION_MINUTES * 60;
+        let timerInterval;
+
+        document.getElementById('proceed-btn').addEventListener('click', () => {
+            maintenanceGate.style.opacity = '0';
+            setTimeout(() => {
+                maintenanceGate.style.display = 'none';
+                gate.style.display = 'flex';
+            }, 500);
+        });
+
+        document.getElementById('accept-btn').addEventListener('click', () => {
+            gate.style.opacity = '0';
+            setTimeout(() => gate.style.display = 'none', 500);
+            main.style.filter = 'none';
+            main.style.opacity = '1';
+            setTimeout(() => {
+                addMsg("⚠️ SYSTEM ACTIVE - UNDER MAINTENANCE MODE", 'ai');
+                addMsg("FREE TIER ACTIVE. 5 MINUTE LIMIT STARTED.", 'ai');
+                startTimer();
+            }, 800);
+            input.focus();
+        });
+
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    endSession();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timeRemaining / 60);
+            const s = timeRemaining % 60;
+            timerDisplay.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            if (timeRemaining < 60) {
+                timerDisplay.style.color = "var(--neon-yellow)";
+                timerDisplay.style.animationDuration = "0.5s";
+            }
+        }
+
+        function endSession() {
+            input.disabled = true;
+            btn.disabled = true;
+            expiryGate.style.display = "flex";
+        }
+
+        function addMsg(text, type) {
+            const div = document.createElement('div');
+            div.className = `msg msg-${type}`;
+            div.innerHTML = text.replace(/\n/g, '<br>');
+            const time = document.createElement('div');
+            time.style.fontSize = '0.7rem';
+            time.style.opacity = '0.5';
+            time.style.marginTop = '5px';
+            time.style.fontFamily = 'var(--font-tech)';
+            time.innerText = new Date().toLocaleTimeString();
+            div.appendChild(time);
+            msgs.appendChild(div);
+            msgs.scrollTop = msgs.scrollHeight;
+            return div;
+        }
+
+        async function handleSend() {
+            const val = input.value.trim();
+            if(!val) return;
+
+            addMsg(val, 'user');
+            input.value = '';
+            input.disabled = true;
+            btn.disabled = true;
+            
+            const lowerVal = val.toLowerCase();
+            if (lowerVal.includes("who made you") || 
+                lowerVal.includes("who created you") || 
+                lowerVal.includes("who is your creator") ||
+                lowerVal.includes("who developed you") ||
+                lowerVal.includes("who built you")) {
+                
+                setTimeout(() => {
+                    addMsg("I was developed by Sarnab.", 'ai');
+                    input.disabled = false;
+                    btn.disabled = false;
+                    input.focus();
+                }, 600);
+                return;
+            }
+            
+            const loadId = 'load-' + Date.now();
+            const loadDiv = document.createElement('div');
+            loadDiv.className = 'msg msg-ai';
+            loadDiv.id = loadId;
+            loadDiv.innerHTML = '<span style="animation:blink 0.5s infinite">> Give me a moment...</span>';
+            msgs.appendChild(loadDiv);
+            msgs.scrollTop = msgs.scrollHeight;
+
+            try {
+                const systemPrompt = "You are Dexter, a helpful AI assistant developed by Sarnab. Keep answers concise and helpful.";
+                let text = null;
+                
+                try {
+                    const response1 = await fetch('https://text.pollinations.ai/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            messages: [
+                                { role: 'system', content: systemPrompt },
+                                { role: 'user', content: val }
+                            ],
+                            model: 'openai'
+                        }),
+                        signal: AbortSignal.timeout(15000)
+                    });
+                    
+                    if (response1.ok) {
+                        text = await response1.text();
+                        try {
+                            const jsonData = JSON.parse(text);
+                            text = jsonData.text || jsonData.output || jsonData.response || text;
+                        } catch(e) {}
+                    }
+                } catch(e) {
+                    console.log('Method 1 failed, trying fallback...');
+                }
+                
+                if (!text) {
+                    try {
+                        const response2 = await fetch(
+                            `https://text.pollinations.ai/${encodeURIComponent(val)}?system=${encodeURIComponent(systemPrompt)}`,
+                            { signal: AbortSignal.timeout(15000) }
+                        );
+                        
+                        if (response2.ok) {
+                            text = await response2.text();
+                        }
+                    } catch(e) {
+                        console.log('Method 2 failed, trying final fallback...');
+                    }
+                }
+                
+                if (!text) {
+                    try {
+                        const response3 = await fetch(
+                            `https://api.pollinations.ai/prompt/${encodeURIComponent(val)}`,
+                            { signal: AbortSignal.timeout(15000) }
+                        );
+                        
+                        if (response3.ok) {
+                            text = await response3.text();
+                        }
+                    } catch(e) {
+                        console.log('All methods failed');
+                    }
+                }
+                
+                document.getElementById(loadId).remove();
+                
+                if (text && text.trim()) {
+                    addMsg(text, 'ai');
+                } else {
+                    addMsg("[AI SERVICE UNAVAILABLE]: The AI service is temporarily unreachable. This is expected during maintenance. Please try again.", 'ai');
+                }
+
+            } catch(e) {
+                document.getElementById(loadId).remove();
+                console.error('AI Error:', e);
+                addMsg("[CONNECTION ERROR]: Service disruption due to ongoing maintenance. Please try again.", 'ai');
+            }
+            
+            if (timeRemaining > 0) {
+                input.disabled = false;
+                btn.disabled = false;
+                input.focus();
+            }
+        }
+        
+        btn.addEventListener('click', handleSend);
+        input.addEventListener('keypress', e => { if(e.key === 'Enter') handleSend() });
     </script>
 </body>
 </html>
