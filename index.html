@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEXTER | FREE TIER</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <title>DEXTER FREE TIER</title>
     <style>
         :root {
             --neon-blue: #00f3ff;
@@ -12,141 +12,115 @@
             --neon-red: #ff0055;
             --neon-yellow: #ffee00;
             --neon-green: #39ff14;
-            --bg-dark: #050505;
-            --panel-bg: rgba(10, 10, 16, 0.95);
-            --font-main: 'Rajdhani', sans-serif;
-            --font-tech: 'Share Tech Mono', monospace;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: var(--bg-dark); color: white; font-family: var(--font-main);
-            height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            color: white;
         }
-        #particles-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
-        }
-        .scanline {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.4) 51%);
-            background-size: 100% 4px; pointer-events: none; z-index: 100; opacity: 0.5;
-        }
-        .cyber-grid {
-            position: absolute; width: 200%; height: 200%;
-            background-image: linear-gradient(rgba(0, 243, 255, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.08) 1px, transparent 1px);
-            background-size: 40px 40px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-            animation: gridMove 20s linear infinite; z-index: 0;
-        }
-        @keyframes gridMove { 
-            0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 
-            100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } 
-        }
-        /* Include all the rest of the original styling CSS, maintenance gate, terms gate, expiry gate, all HTML structure with sidebar (timer, CCTV, stats), chat section */
-        /* Example add-ons (elaborating on structure and adding functions etc...) */
-        .sidebar { /* Sidebar styles */ }
-        .chat-section { /* Chat section styles */ }
-        /* Include all elements, gates and functions */
+        /* Additional CSS styling for neon colors */
     </style>
 </head>
 <body>
-    <canvas id="particles-canvas"></canvas>
-    <div class="scanline"></div>
-    <div class="cyber-grid"></div>
-    <div class="sidebar">
-        <!-- Sidebar content (timer, CCTV, stats) -->
+    <div id="maintenance-gate">
+        <p>Warning: Multi-API system in maintenance.</p>
     </div>
-    <div class="chat-section">
-        <!-- Chat interface here -->
-        <input id="input" type="text" placeholder="Type your message..." />
-        <button id="btn">Send</button>
-        <button id="voiceBtn">Voice</button>
+    <div id="terms-gate">
+        <p>Terms of Service: 5-minute session.</p>
+        <button id="accept-terms">Accept</button>
+    </div>
+    <div id="expiry-gate">
+        <p>Your session has expired.</p>
+    </div>
+    <aside>
+        <h2>SESSION REMAINING: <span id="timer">5:00</span></h2>
+        <div id="defender-unit">
+            <iframe src="https://tenor.com/embed/26766629" frameborder="0"></iframe>
+        </div>
+    </aside>
+    <div id="system-stats">
+        <div>
+            <h3>CPU</h3>
+            <div class="bar" id="cpu-bar"></div>
+        </div>
+        <div>
+            <h3>Memory</h3>
+            <div class="bar" id="memory-bar"></div>
+        </div>
+        <div>
+            <h3>Network</h3>
+            <div class="bar" id="network-bar"></div>
+        </div>
+    </div>
+    <div id="chat">
+        <h2>DEXTER // AI</h2>
+        <div id="messages"></div>
+        <input id="user-input" placeholder="Type a message...">
+        <button id="send-button">Send</button>
+        <button id="clear-button">Clear</button>
+        <button id="export-button">Export</button>
+        <div id="suggestions">
+            <button class="suggestion-chip">Tell me a joke</button>
+            <button class="suggestion-chip">Explain quantum computing</button>
+            <button class="suggestion-chip">Write a Python function</button>
+            <button class="suggestion-chip">What can you do?</button>
+        </div>
+        <p>Version: V.0.3.FREE</p>
     </div>
     <script>
-        // Complete JavaScript code including particle animation, system stats, gates, timer, voice recognition, commands
-        async function handleSend() {
-            const val = input.value.trim();
-            if(!val) return;
-            if (val.startsWith('/')) {
-                addMsg(val, 'user');
-                input.value = '';
-                if (handleCommand(val)) return;
-                else { addMsg('❌ Unknown command. Type /help for available commands.', 'ai'); return; }
+        // JavaScript code implementing functionalities
+        let countdown = 300;
+        let timerId = setInterval(() => {
+            // Update timer and session remaining display
+            if (countdown > 0) {
+                countdown--;
+                document.getElementById('timer').textContent = Math.floor(countdown / 60) + ':' + (countdown % 60).toString().padStart(2, '0');
+            } else {
+                clearInterval(timerId);
+                alert('Session expired!');
             }
-            addMsg(val, 'user');
-            input.value = '';
-            input.disabled = true;
-            btn.disabled = true;
-            voiceBtn.disabled = true;
-            const lowerVal = val.toLowerCase();
-            if (lowerVal.includes("who made you") || lowerVal.includes("who created you") || lowerVal.includes("who is your creator") || lowerVal.includes("who developed you") || lowerVal.includes("who built you")) {
-                showTypingIndicator();
-                setTimeout(() => {
-                    removeTypingIndicator();
-                    addMsg("I was developed by Sarnab. 👨‍💻", 'ai');
-                    input.disabled = false; btn.disabled = false; voiceBtn.disabled = false; input.focus();
-                }, 1000);
-                return;
-            }
-            showTypingIndicator();
-            let success = false;
-            
-            // Try Method 1: Hugging Face Inference API (Free forever)
+        }, 1000);
+
+        const handleSend = async () => {
+            const userInput = document.getElementById('user-input').value;
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = userInput;
+            document.getElementById('messages').appendChild(messageDiv);
+
+            // Typing animation
+            const typingIndicator = document.createElement('div');
+            typingIndicator.textContent = '...';
+            document.getElementById('messages').appendChild(typingIndicator);
+
             try {
-                const hfResponse = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ inputs: "You are Dexter, a helpful AI assistant developed by Sarnab. Keep answers concise and helpful. User asks: " + val })
+                let response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({inputs: userInput, parameters: {max_new_tokens: 250, temperature: 0.7}})
                 });
-                if (hfResponse.ok) {
-                    const hfData = await hfResponse.json();
-                    if (hfData && hfData[0] && hfData[0].generated_text) {
-                        removeTypingIndicator();
-                        addMsg(hfData[0].generated_text.split("User asks:")[1] || hfData[0].generated_text, 'ai');
-                        success = true;
-                    }
-                }
-            } catch(e) { console.log('HF API failed, trying next...'); }
-            
-            // Try Method 2: Pollinations AI (text endpoint)
-            if (!success) {
+                if (!response.ok) throw new Error('Hugging Face API error');
+                let data = await response.json();
+                messageDiv.textContent += '\n' + data.output;
+            } catch (error) {
+                // Fallback to Pollinations API
                 try {
-                    const pollResponse = await fetch("https://text.pollinations.ai/" + encodeURIComponent(val));
-                    if (pollResponse.ok) {
-                        const text = await pollResponse.text();
-                        if (text && text.trim()) {
-                            removeTypingIndicator();
-                            addMsg(text.trim(), 'ai');
-                            success = true;
-                        }
-                    }
-                } catch(e) { console.log('Pollinations failed, using fallback...'); }
-            }
-            
-            // Fallback: Smart local responses
-            if (!success) {
-                removeTypingIndicator();
-                const keywords = val.toLowerCase();
-                let fallbackMsg = "";
-                if (keywords.includes("hello") || keywords.includes("hi") || keywords.includes("hey")) {
-                    fallbackMsg = "👋 Hello! I'm Dexter, developed by Sarnab. How can I assist you today?";
-                } else if (keywords.includes("how are you")) {
-                    fallbackMsg = "🤖 I'm functioning optimally! All systems green. How can I help you?";
-                } else if (keywords.includes("thank")) {
-                    fallbackMsg = "You're welcome! Happy to help! 😊";
-                } else if (keywords.includes("joke")) {
-                    fallbackMsg = "😄 Why don't programmers like nature? Too many bugs! 🐛";
-                } else if (keywords.includes("help") && !val.startsWith('/')) {
-                    fallbackMsg = "💡 I can help with questions, writing, coding, and more! Try asking me anything or type /help for commands.";
-                } else {
-                    fallbackMsg = "I understand you're asking about: '" + val +"'. I'm currently using offline mode. For best results, the AI services should reconnect soon. Meanwhile, try /help for available commands! 🔧";
+                    let response = await fetch('https://text.pollinations.ai/');
+                    if (!response.ok) throw new Error('Pollinations API error');
+                    let data = await response.json();
+                    messageDiv.textContent += '\n' + data.output;
+                } catch (error) {
+                    console.error('Both APIs failed:', error);
                 }
-                addMsg(fallbackMsg, 'ai');
+            } finally {
+                // Remove typing indicator
+                document.getElementById('messages').removeChild(typingIndicator);
             }
-            
-            if (timeRemaining > 0) {
-                input.disabled = false; btn.disabled = false; voiceBtn.disabled = false; input.focus();
-            }
-        }
+        };
+
+        document.getElementById('send-button').addEventListener('click', handleSend);
+
+        // Implement other functionalities such as suggestion chip handlers
     </script>
 </body>
 </html>
