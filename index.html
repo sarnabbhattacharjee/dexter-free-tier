@@ -33,7 +33,6 @@
             animation: gridMove 20s linear infinite; z-index: 0;
         }
         @keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } }
-        
         /* GATES (Start & End) */
         .gate-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98);
@@ -46,36 +45,47 @@
         }
         .gate-title { color: var(--neon-red); font-size: 2.2rem; font-family: var(--font-tech); letter-spacing: 3px; margin-bottom: 20px; animation: glitch 2s infinite; }
         .gate-text { color: #d1d5db; text-align: left; margin-bottom: 30px; line-height: 1.6; font-size: 1rem; border-top: 1px solid rgba(255,0,0,0.3); border-bottom: 1px solid rgba(255,0,0,0.3); padding: 20px 0; }
-        .accept-btn { background: var(--neon-red); color: white; font-family: var(--font-tech); font-size: 1.1rem; padding: 15px 40px; border: none; cursor: pointer; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition: 0.3s; }
+        .accept-btn { background: var(--neon-red); color: white; font-family: var(--font-tech); font-size: 1.1rem; padding: 15px 40px; border: none; cursor: pointer; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); }
         .accept-btn:hover { background: white; color: black; box-shadow: 0 0 20px var(--neon-red); }
-
-     
+        /* MAINTENANCE GATE */
+        #maintenance-gate { z-index: 10001; }
+        .maintenance-box {
+            border-color: var(--neon-yellow);
+            background: rgba(25, 20, 5, 0.95);
+            box-shadow: 0 0 60px rgba(255, 238, 0, 0.3);
+        }
+        .maintenance-title {
+            color: var(--neon-yellow);
+            font-size: 2rem;
+        }
+        .maintenance-icon {
+            font-size: 4rem;
+            color: var(--neon-yellow);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
         #expiry-gate { display: none; z-index: 10000; }
         .upgrade-btn { background: var(--neon-yellow); color: black; margin-top: 10px; }
-        
-     
         #main-interface { display: flex; height: 100%; z-index: 10; padding: 25px; gap: 25px; filter: blur(20px); opacity: 0.2; transition: all 1s ease; }
         .sidebar { width: 320px; display: flex; flex-direction: column; gap: 20px; }
         .defender-unit { border: 1px solid var(--neon-blue); background: var(--panel-bg); padding: 0; box-shadow: 0 0 15px rgba(0, 243, 255, 0.05); display: flex; flex-direction: column; }
-        .defender-header { display: flex; justify-content: space-between; background: rgba(0, 243, 255, 0.15); color: var(--neon-blue); font-family: var(--font-tech); font-size: 0.85rem; padding: 10px; border-bottom: 1px solid rgba(0, 243, 255, 0.3); letter-spacing: 1px; }
-        
-    
+        .defender-header { display: flex; justify-content: space-between; background: rgba(0, 243, 255, 0.15); color: var(--neon-blue); font-family: var(--font-tech); font-size: 0.85rem; padding: 10px 15px; text-transform: uppercase; letter-spacing: 1px; }
         .timer-box {
-            padding: 15px; border: 1px solid var(--neon-red); background: rgba(255, 0, 0, 0.05); 
-            text-align: center; margin-bottom: 20px; 
+            padding: 15px; border: 1px solid var(--neon-red); background: rgba(255, 0, 0, 0.05);
+            text-align: center; margin-bottom: 20px;
         }
         .timer-label { font-family: var(--font-tech); font-size: 0.8rem; color: var(--neon-red); letter-spacing: 2px; margin-bottom: 5px; }
         .timer-digits { font-family: var(--font-tech); font-size: 2.5rem; color: white; text-shadow: 0 0 10px var(--neon-red); }
-
-     
         .cctv-container { width: 100%; height: 200px; background: #000; position: relative; overflow: hidden; }
         .click-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99; background: transparent; }
-        .cctv-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.25) 50%); background-size: 100% 4px; z-index: 50; pointer-events: none; box-shadow: inset 0 0 40px rgba(0,0,0,1); }
+        .cctv-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.25) 50%); background-size: 100% 4px; z-index: 50; pointer-events: none; }
         .rec-tag { position: absolute; top: 15px; right: 15px; color: red; font-family: var(--font-tech); font-size: 0.8rem; z-index: 60; animation: blink 1s infinite; text-shadow: 0 0 5px red; }
         .cctv-iframe { position: absolute; top: 50%; left: 50%; width: 160%; height: 160%; transform: translate(-50%, -50%); border: none; filter: grayscale(100%) contrast(1.1) sepia(20%); pointer-events: none; }
-        .status-log { font-family: var(--font-tech); font-size: 0.75rem; color: var(--neon-blue); padding: 15px; text-align: center; opacity: 0.8; border-top: 1px solid rgba(0, 243, 255, 0.2); background: rgba(0,0,0,0.3); }
-
-       
+        .status-log { font-family: var(--font-tech); font-size: 0.75rem; color: var(--neon-blue); padding: 15px; text-align: center; opacity: 0.8; border-top: 1px solid rgba(0, 243, 255, 0.2); background: rgba(0,0,0,0.6); }
         .chat-section { flex: 1; display: flex; flex-direction: column; border: 1px solid var(--neon-blue); background: rgba(5, 5, 8, 0.85); position: relative; }
         .chat-header { padding: 15px 25px; background: rgba(0, 243, 255, 0.08); border-bottom: 1px solid var(--neon-blue); display: flex; justify-content: space-between; align-items: center; }
         .brand { font-size: 1.5rem; font-weight: 700; color: white; letter-spacing: 2px; }
@@ -87,15 +97,14 @@
         .msg-user { align-self: flex-end; background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(188, 19, 254, 0.15)); border-right: 2px solid var(--neon-purple); text-align: right; }
         .msg-ai { align-self: flex-start; background: linear-gradient(90deg, rgba(0, 243, 255, 0.08), rgba(0,0,0,0.5)); border-left: 2px solid var(--neon-blue); color: var(--neon-blue); font-family: var(--font-tech); }
         .input-bar { padding: 20px; background: rgba(0,0,0,0.8); border-top: 1px solid var(--neon-blue); display: flex; gap: 15px; }
-        .cyber-input { flex: 1; background: transparent; border: 1px solid #333; color: var(--neon-blue); font-family: var(--font-tech); font-size: 1.1rem; padding: 12px 15px; outline: none; transition: 0.3s; }
+        .cyber-input { flex: 1; background: transparent; border: 1px solid #333; color: var(--neon-blue); font-family: var(--font-tech); font-size: 1.1rem; padding: 12px 15px; outline: none; transition: all 0.3s; }
         .cyber-input:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.15); }
-        .send-btn { width: 80px; background: var(--neon-blue); border: none; font-weight: 800; font-family: var(--font-tech); cursor: pointer; clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%, 0 15%); }
+        .send-btn { width: 80px; background: var(--neon-blue); border: none; font-weight: 800; font-family: var(--font-tech); cursor: pointer; clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%, 0 15%); transition: all 0.3s; }
         .send-btn:hover { background: white; box-shadow: 0 0 15px var(--neon-blue); }
-
         @keyframes glitch { 0% { text-shadow: 2px 0 var(--neon-blue), -2px 0 var(--neon-purple); } 100% { text-shadow: 2px 0 var(--neon-blue), -2px 0 var(--neon-purple); } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 800px) { #main-interface { flex-direction: column; padding: 10px; gap: 10px; } .sidebar { width: 100%; order: -1; } .cctv-container { height: 180px; } .chat-section { height: 60vh; } }
+        @media (max-width: 800px) { #main-interface { flex-direction: column; padding: 10px; gap: 10px; } .sidebar { width: 100%; order: -1; } .cctv-container { height: 180px; } .chat-section { height: 400px; } }
     </style>
 </head>
 <body>
@@ -103,7 +112,22 @@
     <div class="scanline"></div>
     <div class="cyber-grid"></div>
 
-    <div id="terms-gate" class="gate-overlay">
+    <!-- MAINTENANCE NOTICE GATE -->
+    <div id="maintenance-gate" class="gate-overlay">
+        <div class="gate-box maintenance-box">
+            <div class="maintenance-icon">⚠️</div>
+            <h1 class="gate-title maintenance-title">SYSTEM MAINTENANCE</h1>
+            <div class="gate-text" style="text-align: center; border-color: rgba(255,238,0,0.3);">
+                <p style="font-size: 1.2rem; color: var(--neon-yellow); margin-bottom: 20px;"><strong>AI SERVICE TEMPORARILY UNAVAILABLE</strong></p>
+                <p style="font-size: 1rem; color: #d1d5db;">The AI is currently down due to development process ongoing.</p>
+                <p style="font-size: 0.9rem; color: #999; margin-top: 20px;">We apologize for the inconvenience. Please check back later.</p>
+                <p style="font-size: 0.8rem; color: var(--neon-yellow); margin-top: 25px; font-family: var(--font-tech);">SYSTEM STATUS: UNDER MAINTENANCE</p>
+            </div>
+            <button class="accept-btn" style="background: var(--neon-yellow); color: black;" onclick="location.reload()">REFRESH PAGE</button>
+        </div>
+    </div>
+
+    <div id="terms-gate" class="gate-overlay" style="display: none;">
         <div class="gate-box">
             <h1 class="gate-title">⚠️ FREE TIER ACCESS ⚠️</h1>
             <div class="gate-text">
@@ -121,7 +145,7 @@
         </div>
     </div>
 
-    <div id="expiry-gate" class="gate-overlay">
+    <div id="expiry-gate" class="gate-overlay" style="display: none;">
         <div class="gate-box" style="border-color: var(--neon-yellow);">
             <h1 class="gate-title" style="color: var(--neon-yellow);">⚠️ SESSION EXPIRED ⚠️</h1>
             <div class="gate-text">
@@ -129,18 +153,16 @@
                 <p>Your free connection to the DEXTER Neural Network has been severed to preserve server resources.</p>
                 <p style="color: var(--neon-red); margin-top: 20px;">CONNECTION TERMINATED.</p>
             </div>
-            <button class="accept-btn upgrade-btn" onclick="location.reload()"></button>
+            <button class="accept-btn upgrade-btn" onclick="location.reload()">RESTART SESSION</button>
         </div>
     </div>
 
     <div id="main-interface">
-        
         <div class="sidebar">
             <div class="defender-unit timer-box">
                 <div class="timer-label">SESSION REMAINING</div>
                 <div class="timer-digits" id="timer">05:00</div>
             </div>
-
             <div class="defender-unit">
                 <div class="defender-header">
                     <span>DEFENDER SYSTEM</span>
@@ -156,7 +178,6 @@
                     SECURITY LEVEL: GHOST<br>Carefull I am watching u, miss-use = BAN...
                 </div>
             </div>
-
             <div class="defender-unit">
                 <div class="defender-header">SYSTEM SPECS</div>
                 <div style="padding: 15px;">
@@ -168,7 +189,6 @@
                 </div>
             </div>
         </div>
-
         <div class="chat-section">
             <div class="chat-header">
                 <div class="brand">AURAA <span>// AI</span></div>
@@ -183,7 +203,11 @@
     </div>
 
     <script>
-        const SESSION_MINUTES = 5; 
+        // TO REMOVE MAINTENANCE MODE: Simply delete or comment out the maintenance gate div above
+        // and uncomment the line below:
+        // document.getElementById('maintenance-gate').style.display = 'none';
+        
+        const SESSION_MINUTES = 5;
         const gate = document.getElementById('terms-gate');
         const expiryGate = document.getElementById('expiry-gate');
         const main = document.getElementById('main-interface');
@@ -203,7 +227,6 @@
                 addMsg("FREE TIER ACTIVE. 5 MINUTE LIMIT STARTED.", 'ai');
                 startTimer();
             }, 800);
-            
             input.focus();
         });
         function startTimer() {
@@ -226,7 +249,7 @@
 
             if (timeRemaining < 60) {
                 timerDisplay.style.color = "var(--neon-yellow)";
-                timerDisplay.style.animationDuration = "0.5s"; 
+                timerDisplay.style.animationDuration = "0.5s";
             }
         }
 
